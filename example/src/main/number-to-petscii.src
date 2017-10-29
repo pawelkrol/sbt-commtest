@@ -1,0 +1,256 @@
+;----------------------------------
+            *= $1000
+;----------------------------------
+; INPUT
+; .A     - number 8bit
+; .A/.X  - number 16bit
+; OUTPUT
+; sign   - sign ($00 - plus, $01 - minus)
+; number - digits
+; .X     - number of digits
+;----------------------------------
+sign        .db $00
+number      .dsb $06,$00
+;----------------------------------
+byte_to_hex pha
+            and #$f0
+            lsr
+            lsr
+            lsr
+            lsr
+            sta number+0
+
+            pla
+            and #$0f
+            sta number+1
+
+            lda #$00
+            sta number+2
+
+            ldx #$02
+            rts
+;----------------------------------
+word_to_hex pha
+            txa
+            pha
+            and #$f0
+            lsr
+            lsr
+            lsr
+            lsr
+            sta number+0
+
+            pla
+            and #$0f
+            sta number+1
+
+            pla
+            pha
+            and #$f0
+            lsr
+            lsr
+            lsr
+            lsr
+            sta number+2
+
+            pla
+            and #$0f
+            sta number+3
+
+            lda #$00
+            sta number+4
+
+            ldx #$04
+            rts
+;----------------------------------
+signed_byte_to_dec
+            pha
+            ldy #$00
+            pla
+            bpl *+8
+            eor #$ff
+            clc
+            adc #$01
+            iny
+            sty sign
+            jmp unsigned_byte_to_dec
+;----------------------------------
+signed_word_to_dec
+            pha
+            txa
+            pha
+            ldy #$00
+            pla
+            bpl *+5
+            eor #$ff
+            iny
+            sty sign
+            tax
+            pla
+            ldy sign
+            beq *+10
+            eor #$ff
+            clc
+            adc #$01
+            bcc *+3
+            inx
+            jmp unsigned_word_to_dec
+;----------------------------------
+unsigned_byte_to_dec
+            ldx #$00
+            pha
+
+            ldy #$00
+again1      sec
+            pla
+            sbc #100
+            bcc no_more1
+            pha
+            iny
+            jmp again1
+
+no_more1    clc
+            adc #100
+            pha
+            tya
+            cmp #$00
+            beq *+6
+            sta number,x
+            inx
+
+            ldy #$00
+again2      sec
+            pla
+            sbc #10
+            bcc no_more2
+            pha
+            iny
+            jmp again2
+
+no_more2    clc
+            adc #10
+            pha
+            tya
+            cmp #$00
+            beq *+6
+            sta number,x
+            inx
+
+            ldy #$00
+again3      sec
+            pla
+            sbc #1
+            bcc no_more3
+            pha
+            iny
+            jmp again3
+
+no_more3    tya
+            sta number,x
+            inx
+
+            lda #$00
+            sta number,x
+
+            rts
+;----------------------------------
+unsigned_word_to_dec
+
+            pha
+            jsr set_zero
+            pla
+            tay
+
+            cpy #$00
+            beq *+9
+            jsr add_one
+            dey
+            jmp *-8
+
+            cpx #$00
+            beq *+8
+            ldy #$00
+            dex
+            jmp *-7-7
+
+            jsr shift_left
+            rts
+;----------------------------------
+set_zero    ldy #$00
+            tya
+            sta number,y
+            iny
+            cpy #$06
+            bne *-6
+            rts
+;----------------------------------
+#macro increment_conditionally(number)
+{
+            lda {number}
+            cmp #$09
+            beq *+6
+            inc {number}
+            rts
+
+            lda #$00
+            sta {number}
+}
+;----------------------------------
+add_one     .increment_conditionally(number+4)
+            .increment_conditionally(number+3)
+            .increment_conditionally(number+2)
+            .increment_conditionally(number+1)
+            inc number+0
+            rts
+;----------------------------------
+shift_left  ldy #$00
+            lda number,y
+            cmp #$00
+            bne *+10
+            iny
+            cpy #$04
+            beq *+5
+            jmp *-12
+
+            ldx #$00
+            lda number,y
+            sta number,x
+            inx
+            iny
+            cpy #$05
+            bne *-10
+
+            lda #$00
+            sta number,x
+
+            rts
+;----------------------------------
+; INPUT
+; sign   - sign to convert in-place
+; .X     - number of digits
+; number - digits to convert in-place
+; OUTPUT
+; sign   - converted number sign
+; number - converted number digits
+;----------------------------------
+number_to_petscii
+
+            dex
+            lda number,x
+            tay
+            lda hex_digits,y
+            sta number,x
+            dex
+            bpl *-11
+
+            ldx sign
+            lda sign_symbol,x
+            sta sign
+
+            rts
+;----------------------------------
+hex_digits  .db $30,$31,$32,$33,$34,$35,$36,$37
+            .db $38,$39,$41,$42,$43,$44,$45,$46
+;----------------------------------
+sign_symbol .db $2b,$2d
+;----------------------------------

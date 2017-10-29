@@ -1,0 +1,241 @@
+;-----------------------------------------------------------------------
+; EXAMPLE:
+; BITMAP  = $4000
+; SCREEN  = $6800
+; COLORS  = $d800
+; #include "graphic-tables.src"
+;
+; EXPORTS:
+; bitmap_y_addr_lo
+; bitmap_y_addr_hi
+; bitmap_x_offs_lo
+; bitmap_x_offs_hi
+; screen_y_addr_lo
+; screen_y_addr_hi
+; colors_y_addr_lo
+; colors_y_addr_hi
+;-----------------------------------------------------------------------
+bitmap_y_addr_lo    .db <(BITMAP+$0000),<(BITMAP+$0001),<(BITMAP+$0002)
+                    .db <(BITMAP+$0003),<(BITMAP+$0004),<(BITMAP+$0005)
+                    .db <(BITMAP+$0006),<(BITMAP+$0007),<(BITMAP+$0140)
+                    .db <(BITMAP+$0141),<(BITMAP+$0142),<(BITMAP+$0143)
+                    .db <(BITMAP+$0144),<(BITMAP+$0145),<(BITMAP+$0146)
+                    .db <(BITMAP+$0147),<(BITMAP+$0280),<(BITMAP+$0281)
+                    .db <(BITMAP+$0282),<(BITMAP+$0283),<(BITMAP+$0284)
+                    .db <(BITMAP+$0285),<(BITMAP+$0286),<(BITMAP+$0287)
+                    .db <(BITMAP+$03c0),<(BITMAP+$03c1),<(BITMAP+$03c2)
+                    .db <(BITMAP+$03c3),<(BITMAP+$03c4),<(BITMAP+$03c5)
+                    .db <(BITMAP+$03c6),<(BITMAP+$03c7),<(BITMAP+$0500)
+                    .db <(BITMAP+$0501),<(BITMAP+$0502),<(BITMAP+$0503)
+                    .db <(BITMAP+$0504),<(BITMAP+$0505),<(BITMAP+$0506)
+                    .db <(BITMAP+$0507),<(BITMAP+$0640),<(BITMAP+$0641)
+                    .db <(BITMAP+$0642),<(BITMAP+$0643),<(BITMAP+$0644)
+                    .db <(BITMAP+$0645),<(BITMAP+$0646),<(BITMAP+$0647)
+                    .db <(BITMAP+$0780),<(BITMAP+$0781),<(BITMAP+$0782)
+                    .db <(BITMAP+$0783),<(BITMAP+$0784),<(BITMAP+$0785)
+                    .db <(BITMAP+$0786),<(BITMAP+$0787),<(BITMAP+$08c0)
+                    .db <(BITMAP+$08c1),<(BITMAP+$08c2),<(BITMAP+$08c3)
+                    .db <(BITMAP+$08c4),<(BITMAP+$08c5),<(BITMAP+$08c6)
+                    .db <(BITMAP+$08c7),<(BITMAP+$0a00),<(BITMAP+$0a01)
+                    .db <(BITMAP+$0a02),<(BITMAP+$0a03),<(BITMAP+$0a04)
+                    .db <(BITMAP+$0a05),<(BITMAP+$0a06),<(BITMAP+$0a07)
+                    .db <(BITMAP+$0b40),<(BITMAP+$0b41),<(BITMAP+$0b42)
+                    .db <(BITMAP+$0b43),<(BITMAP+$0b44),<(BITMAP+$0b45)
+                    .db <(BITMAP+$0b46),<(BITMAP+$0b47),<(BITMAP+$0c80)
+                    .db <(BITMAP+$0c81),<(BITMAP+$0c82),<(BITMAP+$0c83)
+                    .db <(BITMAP+$0c84),<(BITMAP+$0c85),<(BITMAP+$0c86)
+                    .db <(BITMAP+$0c87),<(BITMAP+$0dc0),<(BITMAP+$0dc1)
+                    .db <(BITMAP+$0dc2),<(BITMAP+$0dc3),<(BITMAP+$0dc4)
+                    .db <(BITMAP+$0dc5),<(BITMAP+$0dc6),<(BITMAP+$0dc7)
+                    .db <(BITMAP+$0f00),<(BITMAP+$0f01),<(BITMAP+$0f02)
+                    .db <(BITMAP+$0f03),<(BITMAP+$0f04),<(BITMAP+$0f05)
+                    .db <(BITMAP+$0f06),<(BITMAP+$0f07),<(BITMAP+$1040)
+                    .db <(BITMAP+$1041),<(BITMAP+$1042),<(BITMAP+$1043)
+                    .db <(BITMAP+$1044),<(BITMAP+$1045),<(BITMAP+$1046)
+                    .db <(BITMAP+$1047),<(BITMAP+$1180),<(BITMAP+$1181)
+                    .db <(BITMAP+$1182),<(BITMAP+$1183),<(BITMAP+$1184)
+                    .db <(BITMAP+$1185),<(BITMAP+$1186),<(BITMAP+$1187)
+                    .db <(BITMAP+$12c0),<(BITMAP+$12c1),<(BITMAP+$12c2)
+                    .db <(BITMAP+$12c3),<(BITMAP+$12c4),<(BITMAP+$12c5)
+                    .db <(BITMAP+$12c6),<(BITMAP+$12c7),<(BITMAP+$1400)
+                    .db <(BITMAP+$1401),<(BITMAP+$1402),<(BITMAP+$1403)
+                    .db <(BITMAP+$1404),<(BITMAP+$1405),<(BITMAP+$1406)
+                    .db <(BITMAP+$1407),<(BITMAP+$1540),<(BITMAP+$1541)
+                    .db <(BITMAP+$1542),<(BITMAP+$1543),<(BITMAP+$1544)
+                    .db <(BITMAP+$1545),<(BITMAP+$1546),<(BITMAP+$1547)
+                    .db <(BITMAP+$1680),<(BITMAP+$1681),<(BITMAP+$1682)
+                    .db <(BITMAP+$1683),<(BITMAP+$1684),<(BITMAP+$1685)
+                    .db <(BITMAP+$1686),<(BITMAP+$1687),<(BITMAP+$17c0)
+                    .db <(BITMAP+$17c1),<(BITMAP+$17c2),<(BITMAP+$17c3)
+                    .db <(BITMAP+$17c4),<(BITMAP+$17c5),<(BITMAP+$17c6)
+                    .db <(BITMAP+$17c7),<(BITMAP+$1900),<(BITMAP+$1901)
+                    .db <(BITMAP+$1902),<(BITMAP+$1903),<(BITMAP+$1904)
+                    .db <(BITMAP+$1905),<(BITMAP+$1906),<(BITMAP+$1907)
+                    .db <(BITMAP+$1a40),<(BITMAP+$1a41),<(BITMAP+$1a42)
+                    .db <(BITMAP+$1a43),<(BITMAP+$1a44),<(BITMAP+$1a45)
+                    .db <(BITMAP+$1a46),<(BITMAP+$1a47),<(BITMAP+$1b80)
+                    .db <(BITMAP+$1b81),<(BITMAP+$1b82),<(BITMAP+$1b83)
+                    .db <(BITMAP+$1b84),<(BITMAP+$1b85),<(BITMAP+$1b86)
+                    .db <(BITMAP+$1b87),<(BITMAP+$1cc0),<(BITMAP+$1cc1)
+                    .db <(BITMAP+$1cc2),<(BITMAP+$1cc3),<(BITMAP+$1cc4)
+                    .db <(BITMAP+$1cc5),<(BITMAP+$1cc6),<(BITMAP+$1cc7)
+                    .db <(BITMAP+$1e00),<(BITMAP+$1e01),<(BITMAP+$1e02)
+                    .db <(BITMAP+$1e03),<(BITMAP+$1e04),<(BITMAP+$1e05)
+                    .db <(BITMAP+$1e06),<(BITMAP+$1e07)
+;-----------------------------------------------------------------------
+bitmap_y_addr_hi    .db >(BITMAP+$0000),>(BITMAP+$0001),>(BITMAP+$0002)
+                    .db >(BITMAP+$0003),>(BITMAP+$0004),>(BITMAP+$0005)
+                    .db >(BITMAP+$0006),>(BITMAP+$0007),>(BITMAP+$0140)
+                    .db >(BITMAP+$0141),>(BITMAP+$0142),>(BITMAP+$0143)
+                    .db >(BITMAP+$0144),>(BITMAP+$0145),>(BITMAP+$0146)
+                    .db >(BITMAP+$0147),>(BITMAP+$0280),>(BITMAP+$0281)
+                    .db >(BITMAP+$0282),>(BITMAP+$0283),>(BITMAP+$0284)
+                    .db >(BITMAP+$0285),>(BITMAP+$0286),>(BITMAP+$0287)
+                    .db >(BITMAP+$03c0),>(BITMAP+$03c1),>(BITMAP+$03c2)
+                    .db >(BITMAP+$03c3),>(BITMAP+$03c4),>(BITMAP+$03c5)
+                    .db >(BITMAP+$03c6),>(BITMAP+$03c7),>(BITMAP+$0500)
+                    .db >(BITMAP+$0501),>(BITMAP+$0502),>(BITMAP+$0503)
+                    .db >(BITMAP+$0504),>(BITMAP+$0505),>(BITMAP+$0506)
+                    .db >(BITMAP+$0507),>(BITMAP+$0640),>(BITMAP+$0641)
+                    .db >(BITMAP+$0642),>(BITMAP+$0643),>(BITMAP+$0644)
+                    .db >(BITMAP+$0645),>(BITMAP+$0646),>(BITMAP+$0647)
+                    .db >(BITMAP+$0780),>(BITMAP+$0781),>(BITMAP+$0782)
+                    .db >(BITMAP+$0783),>(BITMAP+$0784),>(BITMAP+$0785)
+                    .db >(BITMAP+$0786),>(BITMAP+$0787),>(BITMAP+$08c0)
+                    .db >(BITMAP+$08c1),>(BITMAP+$08c2),>(BITMAP+$08c3)
+                    .db >(BITMAP+$08c4),>(BITMAP+$08c5),>(BITMAP+$08c6)
+                    .db >(BITMAP+$08c7),>(BITMAP+$0a00),>(BITMAP+$0a01)
+                    .db >(BITMAP+$0a02),>(BITMAP+$0a03),>(BITMAP+$0a04)
+                    .db >(BITMAP+$0a05),>(BITMAP+$0a06),>(BITMAP+$0a07)
+                    .db >(BITMAP+$0b40),>(BITMAP+$0b41),>(BITMAP+$0b42)
+                    .db >(BITMAP+$0b43),>(BITMAP+$0b44),>(BITMAP+$0b45)
+                    .db >(BITMAP+$0b46),>(BITMAP+$0b47),>(BITMAP+$0c80)
+                    .db >(BITMAP+$0c81),>(BITMAP+$0c82),>(BITMAP+$0c83)
+                    .db >(BITMAP+$0c84),>(BITMAP+$0c85),>(BITMAP+$0c86)
+                    .db >(BITMAP+$0c87),>(BITMAP+$0dc0),>(BITMAP+$0dc1)
+                    .db >(BITMAP+$0dc2),>(BITMAP+$0dc3),>(BITMAP+$0dc4)
+                    .db >(BITMAP+$0dc5),>(BITMAP+$0dc6),>(BITMAP+$0dc7)
+                    .db >(BITMAP+$0f00),>(BITMAP+$0f01),>(BITMAP+$0f02)
+                    .db >(BITMAP+$0f03),>(BITMAP+$0f04),>(BITMAP+$0f05)
+                    .db >(BITMAP+$0f06),>(BITMAP+$0f07),>(BITMAP+$1040)
+                    .db >(BITMAP+$1041),>(BITMAP+$1042),>(BITMAP+$1043)
+                    .db >(BITMAP+$1044),>(BITMAP+$1045),>(BITMAP+$1046)
+                    .db >(BITMAP+$1047),>(BITMAP+$1180),>(BITMAP+$1181)
+                    .db >(BITMAP+$1182),>(BITMAP+$1183),>(BITMAP+$1184)
+                    .db >(BITMAP+$1185),>(BITMAP+$1186),>(BITMAP+$1187)
+                    .db >(BITMAP+$12c0),>(BITMAP+$12c1),>(BITMAP+$12c2)
+                    .db >(BITMAP+$12c3),>(BITMAP+$12c4),>(BITMAP+$12c5)
+                    .db >(BITMAP+$12c6),>(BITMAP+$12c7),>(BITMAP+$1400)
+                    .db >(BITMAP+$1401),>(BITMAP+$1402),>(BITMAP+$1403)
+                    .db >(BITMAP+$1404),>(BITMAP+$1405),>(BITMAP+$1406)
+                    .db >(BITMAP+$1407),>(BITMAP+$1540),>(BITMAP+$1541)
+                    .db >(BITMAP+$1542),>(BITMAP+$1543),>(BITMAP+$1544)
+                    .db >(BITMAP+$1545),>(BITMAP+$1546),>(BITMAP+$1547)
+                    .db >(BITMAP+$1680),>(BITMAP+$1681),>(BITMAP+$1682)
+                    .db >(BITMAP+$1683),>(BITMAP+$1684),>(BITMAP+$1685)
+                    .db >(BITMAP+$1686),>(BITMAP+$1687),>(BITMAP+$17c0)
+                    .db >(BITMAP+$17c1),>(BITMAP+$17c2),>(BITMAP+$17c3)
+                    .db >(BITMAP+$17c4),>(BITMAP+$17c5),>(BITMAP+$17c6)
+                    .db >(BITMAP+$17c7),>(BITMAP+$1900),>(BITMAP+$1901)
+                    .db >(BITMAP+$1902),>(BITMAP+$1903),>(BITMAP+$1904)
+                    .db >(BITMAP+$1905),>(BITMAP+$1906),>(BITMAP+$1907)
+                    .db >(BITMAP+$1a40),>(BITMAP+$1a41),>(BITMAP+$1a42)
+                    .db >(BITMAP+$1a43),>(BITMAP+$1a44),>(BITMAP+$1a45)
+                    .db >(BITMAP+$1a46),>(BITMAP+$1a47),>(BITMAP+$1b80)
+                    .db >(BITMAP+$1b81),>(BITMAP+$1b82),>(BITMAP+$1b83)
+                    .db >(BITMAP+$1b84),>(BITMAP+$1b85),>(BITMAP+$1b86)
+                    .db >(BITMAP+$1b87),>(BITMAP+$1cc0),>(BITMAP+$1cc1)
+                    .db >(BITMAP+$1cc2),>(BITMAP+$1cc3),>(BITMAP+$1cc4)
+                    .db >(BITMAP+$1cc5),>(BITMAP+$1cc6),>(BITMAP+$1cc7)
+                    .db >(BITMAP+$1e00),>(BITMAP+$1e01),>(BITMAP+$1e02)
+                    .db >(BITMAP+$1e03),>(BITMAP+$1e04),>(BITMAP+$1e05)
+                    .db >(BITMAP+$1e06),>(BITMAP+$1e07)
+;-----------------------------------------------------------------------
+bitmap_x_offs_lo    .db <$0000,<$0000,<$0000,<$0000,<$0008,<$0008,<$0008
+                    .db <$0008,<$0010,<$0010,<$0010,<$0010,<$0018,<$0018
+                    .db <$0018,<$0018,<$0020,<$0020,<$0020,<$0020,<$0028
+                    .db <$0028,<$0028,<$0028,<$0030,<$0030,<$0030,<$0030
+                    .db <$0038,<$0038,<$0038,<$0038,<$0040,<$0040,<$0040
+                    .db <$0040,<$0048,<$0048,<$0048,<$0048,<$0050,<$0050
+                    .db <$0050,<$0050,<$0058,<$0058,<$0058,<$0058,<$0060
+                    .db <$0060,<$0060,<$0060,<$0068,<$0068,<$0068,<$0068
+                    .db <$0070,<$0070,<$0070,<$0070,<$0078,<$0078,<$0078
+                    .db <$0078,<$0080,<$0080,<$0080,<$0080,<$0088,<$0088
+                    .db <$0088,<$0088,<$0090,<$0090,<$0090,<$0090,<$0098
+                    .db <$0098,<$0098,<$0098,<$00a0,<$00a0,<$00a0,<$00a0
+                    .db <$00a8,<$00a8,<$00a8,<$00a8,<$00b0,<$00b0,<$00b0
+                    .db <$00b0,<$00b8,<$00b8,<$00b8,<$00b8,<$00c0,<$00c0
+                    .db <$00c0,<$00c0,<$00c8,<$00c8,<$00c8,<$00c8,<$00d0
+                    .db <$00d0,<$00d0,<$00d0,<$00d8,<$00d8,<$00d8,<$00d8
+                    .db <$00e0,<$00e0,<$00e0,<$00e0,<$00e8,<$00e8,<$00e8
+                    .db <$00e8,<$00f0,<$00f0,<$00f0,<$00f0,<$00f8,<$00f8
+                    .db <$00f8,<$00f8,<$0100,<$0100,<$0100,<$0100,<$0108
+                    .db <$0108,<$0108,<$0108,<$0110,<$0110,<$0110,<$0110
+                    .db <$0118,<$0118,<$0118,<$0118,<$0120,<$0120,<$0120
+                    .db <$0120,<$0128,<$0128,<$0128,<$0128,<$0130,<$0130
+                    .db <$0130,<$0130,<$0138,<$0138,<$0138,<$0138
+;-----------------------------------------------------------------------
+bitmap_x_offs_hi    .db >$0000,>$0000,>$0000,>$0000,>$0008,>$0008,>$0008
+                    .db >$0008,>$0010,>$0010,>$0010,>$0010,>$0018,>$0018
+                    .db >$0018,>$0018,>$0020,>$0020,>$0020,>$0020,>$0028
+                    .db >$0028,>$0028,>$0028,>$0030,>$0030,>$0030,>$0030
+                    .db >$0038,>$0038,>$0038,>$0038,>$0040,>$0040,>$0040
+                    .db >$0040,>$0048,>$0048,>$0048,>$0048,>$0050,>$0050
+                    .db >$0050,>$0050,>$0058,>$0058,>$0058,>$0058,>$0060
+                    .db >$0060,>$0060,>$0060,>$0068,>$0068,>$0068,>$0068
+                    .db >$0070,>$0070,>$0070,>$0070,>$0078,>$0078,>$0078
+                    .db >$0078,>$0080,>$0080,>$0080,>$0080,>$0088,>$0088
+                    .db >$0088,>$0088,>$0090,>$0090,>$0090,>$0090,>$0098
+                    .db >$0098,>$0098,>$0098,>$00a0,>$00a0,>$00a0,>$00a0
+                    .db >$00a8,>$00a8,>$00a8,>$00a8,>$00b0,>$00b0,>$00b0
+                    .db >$00b0,>$00b8,>$00b8,>$00b8,>$00b8,>$00c0,>$00c0
+                    .db >$00c0,>$00c0,>$00c8,>$00c8,>$00c8,>$00c8,>$00d0
+                    .db >$00d0,>$00d0,>$00d0,>$00d8,>$00d8,>$00d8,>$00d8
+                    .db >$00e0,>$00e0,>$00e0,>$00e0,>$00e8,>$00e8,>$00e8
+                    .db >$00e8,>$00f0,>$00f0,>$00f0,>$00f0,>$00f8,>$00f8
+                    .db >$00f8,>$00f8,>$0100,>$0100,>$0100,>$0100,>$0108
+                    .db >$0108,>$0108,>$0108,>$0110,>$0110,>$0110,>$0110
+                    .db >$0118,>$0118,>$0118,>$0118,>$0120,>$0120,>$0120
+                    .db >$0120,>$0128,>$0128,>$0128,>$0128,>$0130,>$0130
+                    .db >$0130,>$0130,>$0138,>$0138,>$0138,>$0138
+;-----------------------------------------------------------------------
+screen_y_addr_lo    .db <(SCREEN+$0000),<(SCREEN+$0028),<(SCREEN+$0050)
+                    .db <(SCREEN+$0078),<(SCREEN+$00a0),<(SCREEN+$00c8)
+                    .db <(SCREEN+$00f0),<(SCREEN+$0118),<(SCREEN+$0140)
+                    .db <(SCREEN+$0168),<(SCREEN+$0190),<(SCREEN+$01b8)
+                    .db <(SCREEN+$01e0),<(SCREEN+$0208),<(SCREEN+$0230)
+                    .db <(SCREEN+$0258),<(SCREEN+$0280),<(SCREEN+$02a8)
+                    .db <(SCREEN+$02d0),<(SCREEN+$02f8),<(SCREEN+$0320)
+                    .db <(SCREEN+$0348),<(SCREEN+$0370),<(SCREEN+$0398)
+                    .db <(SCREEN+$03c0)
+;-----------------------------------------------------------------------
+screen_y_addr_hi    .db >(SCREEN+$0000),>(SCREEN+$0028),>(SCREEN+$0050)
+                    .db >(SCREEN+$0078),>(SCREEN+$00a0),>(SCREEN+$00c8)
+                    .db >(SCREEN+$00f0),>(SCREEN+$0118),>(SCREEN+$0140)
+                    .db >(SCREEN+$0168),>(SCREEN+$0190),>(SCREEN+$01b8)
+                    .db >(SCREEN+$01e0),>(SCREEN+$0208),>(SCREEN+$0230)
+                    .db >(SCREEN+$0258),>(SCREEN+$0280),>(SCREEN+$02a8)
+                    .db >(SCREEN+$02d0),>(SCREEN+$02f8),>(SCREEN+$0320)
+                    .db >(SCREEN+$0348),>(SCREEN+$0370),>(SCREEN+$0398)
+                    .db >(SCREEN+$03c0)
+;-----------------------------------------------------------------------
+colors_y_addr_lo    .db <(COLORS+$0000),<(COLORS+$0028),<(COLORS+$0050)
+                    .db <(COLORS+$0078),<(COLORS+$00a0),<(COLORS+$00c8)
+                    .db <(COLORS+$00f0),<(COLORS+$0118),<(COLORS+$0140)
+                    .db <(COLORS+$0168),<(COLORS+$0190),<(COLORS+$01b8)
+                    .db <(COLORS+$01e0),<(COLORS+$0208),<(COLORS+$0230)
+                    .db <(COLORS+$0258),<(COLORS+$0280),<(COLORS+$02a8)
+                    .db <(COLORS+$02d0),<(COLORS+$02f8),<(COLORS+$0320)
+                    .db <(COLORS+$0348),<(COLORS+$0370),<(COLORS+$0398)
+                    .db <(COLORS+$03c0)
+;-----------------------------------------------------------------------
+colors_y_addr_hi    .db >(COLORS+$0000),>(COLORS+$0028),>(COLORS+$0050)
+                    .db >(COLORS+$0078),>(COLORS+$00a0),>(COLORS+$00c8)
+                    .db >(COLORS+$00f0),>(COLORS+$0118),>(COLORS+$0140)
+                    .db >(COLORS+$0168),>(COLORS+$0190),>(COLORS+$01b8)
+                    .db >(COLORS+$01e0),>(COLORS+$0208),>(COLORS+$0230)
+                    .db >(COLORS+$0258),>(COLORS+$0280),>(COLORS+$02a8)
+                    .db >(COLORS+$02d0),>(COLORS+$02f8),>(COLORS+$0320)
+                    .db >(COLORS+$0348),>(COLORS+$0370),>(COLORS+$0398)
+                    .db >(COLORS+$03c0)
+;-----------------------------------------------------------------------
