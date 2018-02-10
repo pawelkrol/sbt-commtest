@@ -54,7 +54,7 @@ object SbtCommTest extends AutoPlugin {
     emulatorOptions := "-model c64c -truedrive",
     fuseCFS := "cfs011mount",
     imageBuilder := "cc1541",
-    imageBuilderOptions := "-n \"- SBT-COMMTEST -\" -i \"2017 \"",
+    imageBuilderOptions := "-n \"- SBT-COMMTEST -\" -i \"2018 \"",
     Keys.`package` := (packageAssemblyTask dependsOn compileAssemblyTask).value,
     packager := "exomizer",
     packageAssembly := (packageAssemblyTask dependsOn compileAssemblyTask).value,
@@ -68,8 +68,8 @@ object SbtCommTest extends AutoPlugin {
   )
 
   private def dependencies: Seq[Setting[_]] = Seq(
-    resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
-    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.02-SNAPSHOT"
+    // resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
+    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.02"
   )
 
   override lazy val projectSettings = baseSettings ++ dependencies

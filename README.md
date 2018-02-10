@@ -6,7 +6,7 @@ sbt-commtest
 VERSION
 -------
 
-Version 0.01 (2017-10-29)
+Version 0.02 (2018-02-10)
 
 INSTALLATION
 ------------
@@ -15,7 +15,7 @@ Add plugin to `project/plugins.sbt`:
 
     resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/groups/public/"
 
-    addSbtPlugin("com.github.pawelkrol" % "sbt-commtest" % "0.01")
+    addSbtPlugin("com.github.pawelkrol" % "sbt-commtest" % "0.02")
 
 EXAMPLE
 -------
@@ -109,7 +109,7 @@ In order to avoid running out of available disk space quickly it is recommended 
 COPYRIGHT AND LICENCE
 ---------------------
 
-Copyright (C) 2017 by Pawel Krol.
+Copyright (C) 2017, 2018 by Pawel Krol.
 
 This library is free open source software; you can redistribute it and/or modify it under [the same terms](https://github.com/pawelkrol/sbt-commtest/blob/master/LICENSE.md) as Scala itself, either Scala version 2.12.4 or, at your option, any later version of Scala you may have available.
 

@@ -2,7 +2,7 @@ emulator := "x64sc"
 
 emulatorOptions := "-cartrr /home/djgruby/.vice/Carts/rr38q_cnet.bin -model c64c -truedrive"
 
-imageBuilderOptions := "-n \"DJ GRUBY / TRIAD\" -i \"2017 \""
+imageBuilderOptions := "-n \"DJ GRUBY / TRIAD\" -i \"2018 \""
 
 mainProgram := "bitmap-analyser/bitmap-analyser.src"
 
