@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+0.03 (2018-02-28)
+-----------------
+
+* `CommTest` library dependency version updated to 0.03 (enables capturing screenshots of a presently displayed screen and saving them as _PNG_ files)
+
 0.02 (2018-02-10)
 -----------------
 

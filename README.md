@@ -6,7 +6,7 @@ sbt-commtest
 VERSION
 -------
 
-Version 0.02 (2018-02-10)
+Version 0.03 (2018-02-28)
 
 INSTALLATION
 ------------
@@ -15,7 +15,7 @@ Add plugin to `project/plugins.sbt`:
 
     resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/groups/public/"
 
-    addSbtPlugin("com.github.pawelkrol" % "sbt-commtest" % "0.02")
+    addSbtPlugin("com.github.pawelkrol" % "sbt-commtest" % "0.03")
 
 EXAMPLE
 -------
