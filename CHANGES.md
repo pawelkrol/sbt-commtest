@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+0.05-SNAPSHOT (2019-07-06)
+--------------------------
+
+* `CommTest` library dependency version updated to 0.05 (adds support for `callOriginal` method which executes an original subroutine implementation from within its mocked version)
+
 0.04 (2019-01-23)
 -----------------
 
