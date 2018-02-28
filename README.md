@@ -6,7 +6,7 @@ sbt-commtest
 VERSION
 -------
 
-Version 0.03 (2018-02-28)
+Version 0.04-SNAPSHOT (2018-03-10)
 
 INSTALLATION
 ------------
@@ -15,7 +15,7 @@ Add plugin to `project/plugins.sbt`:
 
     resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/groups/public/"
 
-    addSbtPlugin("com.github.pawelkrol" % "sbt-commtest" % "0.03")
+    addSbtPlugin("com.github.pawelkrol" % "sbt-commtest" % "0.04-SNAPSHOT")
 
 EXAMPLE
 -------
@@ -25,6 +25,7 @@ A sample `build.sbt` with settings to configure `sbt-commtest`:
     lazy val root = (project in file(".")).
       settings(
         Defaults.coreDefaultSettings ++ Seq(
+          addFiles := Seq("01", "02", "03"),
           mainProgram := "program.src",
           packagerOptions := "-m64 -t64 -x1",
           scalaVersion := "2.12.4",

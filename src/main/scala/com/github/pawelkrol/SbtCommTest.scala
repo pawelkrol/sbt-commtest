@@ -18,6 +18,7 @@ import scala.sys.process.Process
 object SbtCommTest extends AutoPlugin {
 
   object autoImport {
+    lazy val addFiles = settingKey[Seq[String]]("Additional files to be written into target disk image.")
     lazy val assemblySource = settingKey[File]("Default assembly source directory.")
     lazy val compiler = settingKey[String]("Defines the compiler to use for compilation.")
     lazy val compilerOptions = settingKey[String]("Options for the compiler.")
@@ -45,6 +46,7 @@ object SbtCommTest extends AutoPlugin {
   override def trigger = allRequirements
 
   lazy val baseSettings: Seq[Setting[_]] = Seq(
+    addFiles := Seq(),
     assemblySource := (sourceDirectory in Compile).value,
     compile in Compile <<= (compile in Compile) dependsOn compileAssembly,
     compileAssembly := compileAssemblyTask.value,
@@ -68,8 +70,8 @@ object SbtCommTest extends AutoPlugin {
   )
 
   private def dependencies: Seq[Setting[_]] = Seq(
-    // resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
-    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.03"
+    resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
+    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.04-SNAPSHOT"
   )
 
   override lazy val projectSettings = baseSettings ++ dependencies
@@ -87,6 +89,7 @@ object SbtCommTest extends AutoPlugin {
 
   lazy val packageAssemblyTask =
     task {
+      val additionalFiles = addFiles.value.map(new File(_).getAbsolutePath)
       val assemblySourcePath = assemblySource.value.getAbsolutePath
       val basePath = baseDirectory.value.getAbsolutePath
       val targetPath = normalizeNoEndSeparator(target.value.getAbsolutePath)
@@ -94,7 +97,7 @@ object SbtCommTest extends AutoPlugin {
       val sourcePath = new File(assemblySourcePath, relativeSource).getAbsolutePath
       compileSrc(sourcePath, streams.value, assemblySourcePath, basePath, targetPath, compiler.value, compilerOptions.value)
       val packagedFile = packagePrg(relativeSource, streams.value, targetPath, packager.value, packagerOptions.value, startAddress.value)
-      packageD64(relativeSource, streams.value, targetPath, imageBuilder.value, imageBuilderOptions.value)
+      packageD64(relativeSource, streams.value, targetPath, additionalFiles, imageBuilder.value, imageBuilderOptions.value)
       packagedFile
     }
 
@@ -176,13 +179,14 @@ object SbtCommTest extends AutoPlugin {
     relativeSource: String,
     s: TaskStreams,
     targetPath: String,
+    additionalFiles: Seq[String],
     imageBuilder: String,
     imageBuilderOptions: String
   ) = {
     val (sourceDirectory, _, sourceBaseName, _) = relativeSourceComponents(relativeSource)
     val targetDirectory = setupTargetDirectory(sourceDirectory, targetPath, s)
     val targetExecutablePrg = new File(targetDirectory, sourceBaseName).getAbsolutePath
-    val allFiles = Seq(targetExecutablePrg)
+    val allFiles = targetExecutablePrg +: additionalFiles
     val targetOutputD64 = targetDiskImageFullPath(relativeSource, s, targetPath)
     val command = imageBuilder + " " + allFiles.map(fileToDisk(_)).mkString(" ") + " " + imageBuilderOptions + " " + targetOutputD64
     executeCommand(command, s)

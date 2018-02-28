@@ -12,7 +12,7 @@ sbtPlugin := true
 
 scalaVersion := "2.10.6"
 
-version := "0.03"
+version := "0.04-SNAPSHOT"
 
 publishTo <<= version { v: String =>
   val nexus = "https://oss.sonatype.org/"

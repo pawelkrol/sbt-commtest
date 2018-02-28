@@ -2,4 +2,4 @@ TODO
 ====
 
 * Implement missing `run-ide64` task
-* Define additional files to write into target D64 disk image in `package` task
+  - Write compiled executable and all additional files into target IDE64 HDD image (dedicated `packageIDE64` task that `runIDE64` depends upon)
