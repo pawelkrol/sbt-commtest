@@ -1,10 +1,11 @@
 CHANGES
 =======
 
-0.04-SNAPSHOT (2018-02-28)
+0.04-SNAPSHOT (2018-03-10)
 --------------------------
 
-* TODO
+* Add a new build option (`addFiles`) allowing to specify a sequence of binary files to be written directly into a packaged D64 disk image that may be needed by a compiled program during its runtime execution
+* `CommTest` library dependency version updated to 0.04-SNAPSHOT (fixes mocking of multiple labels pointing to the same target memory address)
 
 0.03 (2018-02-28)
 -----------------
