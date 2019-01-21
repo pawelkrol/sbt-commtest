@@ -10,13 +10,13 @@ organization := "com.github.pawelkrol"
 
 sbtPlugin := true
 
-scalaVersion := "2.10.6"
+scalaVersion := "2.12.8"
 
 version := "0.04-SNAPSHOT"
 
-publishTo <<= version { v: String =>
+publishTo := {
   val nexus = "https://oss.sonatype.org/"
-  if (v.trim.endsWith("SNAPSHOT"))
+  if (isSnapshot.value)
     Some("snapshots" at nexus + "content/repositories/snapshots")
   else
     Some("releases" at nexus + "service/local/staging/deploy/maven2")

@@ -1,12 +1,12 @@
 sbt-commtest
 ============
 
-[sbt] plugin for running [CommTest]. This plugin requires [sbt 0.13].
+[sbt] plugin for running [CommTest]. This plugin requires [sbt 1.x].
 
 VERSION
 -------
 
-Version 0.04-SNAPSHOT (2018-03-10)
+Version 0.04-SNAPSHOT (2019-01-21)
 
 INSTALLATION
 ------------
@@ -28,7 +28,7 @@ A sample `build.sbt` with settings to configure `sbt-commtest`:
           addFiles := Seq("01", "02", "03"),
           mainProgram := "program.src",
           packagerOptions := "-m64 -t64 -x1",
-          scalaVersion := "2.12.4",
+          scalaVersion := "2.12.8",
           startAddress := 0x1000
         )
       )
@@ -110,14 +110,14 @@ In order to avoid running out of available disk space quickly it is recommended 
 COPYRIGHT AND LICENCE
 ---------------------
 
-Copyright (C) 2017, 2018 by Pawel Krol.
+Copyright (C) 2017-2019 by Pawel Krol.
 
-This library is free open source software; you can redistribute it and/or modify it under [the same terms](https://github.com/pawelkrol/sbt-commtest/blob/master/LICENSE.md) as Scala itself, either Scala version 2.12.4 or, at your option, any later version of Scala you may have available.
+This library is free open source software; you can redistribute it and/or modify it under [the same terms](https://github.com/pawelkrol/sbt-commtest/blob/master/LICENSE.md) as Scala itself, either Scala version 2.12.8 or, at your option, any later version of Scala you may have available.
 
 
 [sbt]: http://www.scala-sbt.org/
 [CommTest]: https://github.com/pawelkrol/Scala-CommTest
-[sbt 0.13]: http://www.scala-sbt.org/1.0/docs/ChangeSummary_0.13.0.html
+[sbt 1.x]: https://www.scala-sbt.org/1.x/docs/index.html
 [Scala]: http://scala-lang.org/
 [CommTest documentation]: https://github.com/pawelkrol/Scala-CommTest#initial-setup
 [CPU 6502 Simulator]: https://github.com/pawelkrol/cpu-6502-simulator
