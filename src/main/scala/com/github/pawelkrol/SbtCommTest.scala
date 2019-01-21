@@ -6,11 +6,10 @@ import org.apache.commons.io.filefilter.{SuffixFileFilter, TrueFileFilter}
 
 import java.io.File
 
-import sbt.{AutoPlugin, Keys, TaskKey, toGroupID, toRepositoryName}
+import sbt.{AutoPlugin, Keys, TaskKey, filesToFinder, fileToRichFile, stringToOrganization, toRepositoryName}
 import sbt.Configurations.{Compile, Test}
 import sbt.Def.{Setting, settingKey, task}
 import sbt.Keys.{TaskStreams, baseDirectory, compile, libraryDependencies, resolvers, run, scalaSource, sourceDirectory, streams, target, unmanagedSourceDirectories}
-import sbt.Path.{filesToFinder, richFile}
 import sbt.plugins.JvmPlugin
 
 import scala.sys.process.Process
@@ -48,7 +47,7 @@ object SbtCommTest extends AutoPlugin {
   lazy val baseSettings: Seq[Setting[_]] = Seq(
     addFiles := Seq(),
     assemblySource := (sourceDirectory in Compile).value,
-    compile in Compile <<= (compile in Compile) dependsOn compileAssembly,
+    compile in Compile := { (compile in Compile) dependsOn compileAssembly }.value,
     compileAssembly := compileAssemblyTask.value,
     compiler := "dreamass",
     compilerOptions := "--max-errors 10 --max-warnings 10 --verbose -Wall",
@@ -56,7 +55,7 @@ object SbtCommTest extends AutoPlugin {
     emulatorOptions := "-model c64c -truedrive",
     fuseCFS := "cfs011mount",
     imageBuilder := "cc1541",
-    imageBuilderOptions := "-n \"- SBT-COMMTEST -\" -i \"2018 \"",
+    imageBuilderOptions := "-n \"- SBT-COMMTEST -\" -i \"2019 \"",
     Keys.`package` := (packageAssemblyTask dependsOn compileAssemblyTask).value,
     packager := "exomizer",
     packageAssembly := (packageAssemblyTask dependsOn compileAssemblyTask).value,
@@ -82,8 +81,9 @@ object SbtCommTest extends AutoPlugin {
       val basePath = baseDirectory.value.getAbsolutePath
       val targetPath = normalizeNoEndSeparator(target.value.getAbsolutePath)
       val sourcePaths = sourceFiles.value.map(_.getAbsolutePath)
+      val s = streams.value
       sourcePaths.foreach(sourcePath =>
-        compileSrc(sourcePath, streams.value, assemblySourcePath, basePath, targetPath, compiler.value, compilerOptions.value)
+        compileSrc(sourcePath, s, assemblySourcePath, basePath, targetPath, compiler.value, compilerOptions.value)
       )
     }
 

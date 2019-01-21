@@ -1,11 +1,13 @@
 CHANGES
 =======
 
-0.04-SNAPSHOT (2018-03-10)
+0.04-SNAPSHOT (2019-01-21)
 --------------------------
 
 * Add a new build option (`addFiles`) allowing to specify a sequence of binary files to be written directly into a packaged D64 disk image that may be needed by a compiled program during its runtime execution
 * `CommTest` library dependency version updated to 0.04-SNAPSHOT (fixes mocking of multiple labels pointing to the same target memory address)
+* `Scala` library version updated to 2.12.8
+* `sbt` build tool version upgraded to 1.2.8
 
 0.03 (2018-02-28)
 -----------------
