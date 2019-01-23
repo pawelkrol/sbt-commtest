@@ -6,7 +6,7 @@ sbt-commtest
 VERSION
 -------
 
-Version 0.04-SNAPSHOT (2019-01-21)
+Version 0.04 (2019-01-23)
 
 INSTALLATION
 ------------
@@ -15,7 +15,7 @@ Add plugin to `project/plugins.sbt`:
 
     resolvers += "Sonatype Releases" at "https://oss.sonatype.org/content/groups/public/"
 
-    addSbtPlugin("com.github.pawelkrol" % "sbt-commtest" % "0.04-SNAPSHOT")
+    addSbtPlugin("com.github.pawelkrol" % "sbt-commtest" % "0.04")
 
 EXAMPLE
 -------
@@ -107,7 +107,7 @@ LOGGING
 
 In order to avoid running out of available disk space quickly it is recommended to minimise the logging output or even turn off logging completely. This is accomplished by creating an appropriately configured `src/test/resources/logback-test.xml` file. Should you lack an inspiration how to do it, see an example [logback-test.xml](example/src/test/resources/logback-test.xml).
 
-COPYRIGHT AND LICENCE
+COPYRIGHT AND LICENSE
 ---------------------
 
 Copyright (C) 2017-2019 by Pawel Krol.

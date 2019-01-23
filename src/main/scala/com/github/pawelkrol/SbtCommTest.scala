@@ -70,7 +70,7 @@ object SbtCommTest extends AutoPlugin {
 
   private def dependencies: Seq[Setting[_]] = Seq(
     resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
-    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.04-SNAPSHOT"
+    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.04"
   )
 
   override lazy val projectSettings = baseSettings ++ dependencies

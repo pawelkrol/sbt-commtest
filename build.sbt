@@ -12,7 +12,7 @@ sbtPlugin := true
 
 scalaVersion := "2.12.8"
 
-version := "0.04-SNAPSHOT"
+version := "0.04"
 
 publishTo := {
   val nexus = "https://oss.sonatype.org/"
@@ -32,8 +32,8 @@ pomExtra := (
   <url>https://github.com/pawelkrol/sbt-commtest</url>
   <licenses>
     <license>
-      <name>Scala License</name>
-      <url>http://www.scala-lang.org/license/</url>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
