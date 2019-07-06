@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils.{convertFileCollectionToFileArray, forceM
 import org.apache.commons.io.filefilter.{SuffixFileFilter, TrueFileFilter}
 
 import java.io.File
+import java.lang.Character.isWhitespace
 
 import sbt.{AutoPlugin, Keys, TaskKey, filesToFinder, fileToRichFile, stringToOrganization, toRepositoryName}
 import sbt.Configurations.{Compile, Test}
@@ -242,23 +243,57 @@ object SbtCommTest extends AutoPlugin {
     executionDirectory: File = new File(".")
   ): Unit = {
     s.log.info(command)
-    val splitCommand = command.split(" ").foldLeft[Tuple2[Seq[String], Boolean]]((Seq(), false))((result, item) => {
-      val (command, quotient) = result
-      val hasOpeningQuote = item(0).equals('\"')
-      val hasClosingQuote = item(item.length - 1).equals('\"')
-      if (quotient)
-        (command.init :+ (command.last + " " + item), !hasClosingQuote)
-      else {
-        val opensQuote = hasOpeningQuote && !hasClosingQuote
-        val itemWithoutQuotes =
-          if (hasOpeningQuote && hasClosingQuote)
-            item.substring(1, item.length - 1)
+
+    object QuotientStatus extends Enumeration {
+      val None, Opened, Closed = Value
+    }
+
+    import QuotientStatus._
+
+    val (splitCommand, lastItem, lastSeparator, lastQuotient) = command.toList.foldLeft[Tuple4[Seq[String], String, Boolean, QuotientStatus.Value]]((Seq(), "", false, None))((result, char) => {
+      val (command, item, separator, quotient) = result
+
+      if (separator)
+        if (quotient == Opened)
+          (command, item :+ char, false, Opened)
+        else
+          if (isWhitespace(char))
+            (command, item, true, None)
+          else if (char == '\"')
+            (command, item, false, Opened)
           else
-            item
-        (command :+ itemWithoutQuotes, opensQuote)
-      }
-    })._1
-    val result = Process(splitCommand.filterNot(_.isEmpty).toSeq, executionDirectory).!!
+            (command, item :+ char, false, None)
+      else
+        if (quotient == Closed)
+          if (isWhitespace(char))
+            (command, "", true, None)
+          else
+            throw new RuntimeException("Unexpected character encountered just after a closing parenthesis: '%c'".format(char))
+        else if (quotient == Opened)
+          if (char == '\"')
+            (command :+ item, "", false, Closed)
+          else
+            (command, item :+ char, false, Opened)
+        else
+          if (isWhitespace(char))
+            if (item.length > 0)
+              (command :+ item, "", true, None)
+            else
+              (command, "", true, None)
+          else
+            (command, item :+ char, false, None)
+    })
+
+    if (lastQuotient == Opened)
+      throw new RuntimeException("Unbalanced quotation mark encountered while parsing command: '%s'".format(command))
+
+    val finalCommand =
+      if (lastSeparator)
+        splitCommand
+      else
+        splitCommand :+ lastItem
+
+    val result = Process(finalCommand.filterNot(_.isEmpty).toSeq, executionDirectory).!!
     s.log.info(result)
   }
 }

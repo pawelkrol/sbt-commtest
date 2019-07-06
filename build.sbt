@@ -1,6 +1,8 @@
 isSnapshot := false
 
-libraryDependencies += "commons-io" % "commons-io" % "2.6"
+libraryDependencies ++= Seq(
+  "commons-io" % "commons-io" % "2.6"
+)
 
 maxErrors := 1
 
