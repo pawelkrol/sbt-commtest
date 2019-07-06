@@ -6,7 +6,7 @@ sbt-commtest
 VERSION
 -------
 
-Version 0.05-SNAPSHOT (2019-01-23)
+Version 0.05-SNAPSHOT (2019-07-06)
 
 INSTALLATION
 ------------

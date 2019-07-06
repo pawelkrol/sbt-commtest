@@ -51,7 +51,7 @@ object SbtCommTest extends AutoPlugin {
     compileAssembly := compileAssemblyTask.value,
     compiler := "dreamass",
     compilerOptions := "--max-errors 10 --max-warnings 10 --verbose -Wall",
-    emulator := "x64",
+    emulator := "x64sc",
     emulatorOptions := "-model c64c -truedrive",
     fuseCFS := "cfs011mount",
     imageBuilder := "cc1541",
@@ -70,7 +70,7 @@ object SbtCommTest extends AutoPlugin {
 
   private def dependencies: Seq[Setting[_]] = Seq(
     resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
-    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.04"
+    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.05"
   )
 
   override lazy val projectSettings = baseSettings ++ dependencies
@@ -119,7 +119,7 @@ object SbtCommTest extends AutoPlugin {
     target: File,
     relativeSource: String,
     emulator: String
-  ) {
+  ): Unit = {
     val targetPath = normalizeNoEndSeparator(target.getAbsolutePath)
     val targetOutputD64 = targetDiskImageFullPath(relativeSource, s, targetPath)
     val fileNameOnDisk = executableFileNameOnDisk(relativeSource)
@@ -143,7 +143,7 @@ object SbtCommTest extends AutoPlugin {
     targetPath: String,
     compiler: String,
     compilerOptions: String
-  ) {
+  ): Unit = {
     val compileDirectory = getFullPath(sourcePath)
     val relativeSource = sourcePath.replace(assemblySourcePath, "")
     val (sourceDirectory, sourceName, sourceBaseName, sourceExtension) = relativeSourceComponents(relativeSource)
@@ -240,7 +240,7 @@ object SbtCommTest extends AutoPlugin {
     command: String,
     s: TaskStreams,
     executionDirectory: File = new File(".")
-  ) {
+  ): Unit = {
     s.log.info(command)
     val splitCommand = command.split(" ").foldLeft[Tuple2[Seq[String], Boolean]]((Seq(), false))((result, item) => {
       val (command, quotient) = result
