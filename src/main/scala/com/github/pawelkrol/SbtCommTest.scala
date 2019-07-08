@@ -1,11 +1,15 @@
 package com.github.pawelkrol
 
 import org.apache.commons.io.FilenameUtils.{getBaseName, getExtension, getFullPath, getFullPathNoEndSeparator, getName, normalizeNoEndSeparator}
-import org.apache.commons.io.FileUtils.{convertFileCollectionToFileArray, forceMkdir, listFiles}
+import org.apache.commons.io.FileUtils.{convertFileCollectionToFileArray, deleteDirectory, forceMkdir, listFiles}
 import org.apache.commons.io.filefilter.{SuffixFileFilter, TrueFileFilter}
 
-import java.io.File
+import java.io.{File, FileInputStream, FileOutputStream}
 import java.lang.Character.isWhitespace
+import java.nio.file.Files.{copy, createTempDirectory}
+import java.nio.file.Paths.{get => getPath}
+import java.nio.file.StandardCopyOption.REPLACE_EXISTING
+import java.util.zip.{ZipFile, ZipInputStream}
 
 import sbt.{AutoPlugin, Keys, TaskKey, filesToFinder, fileToRichFile, stringToOrganization, toRepositoryName}
 import sbt.Configurations.{Compile, Test}
@@ -23,7 +27,7 @@ object SbtCommTest extends AutoPlugin {
     lazy val compiler = settingKey[String]("Defines the compiler to use for compilation.")
     lazy val compilerOptions = settingKey[String]("Options for the compiler.")
     lazy val emulator = settingKey[String]("Defines the emulator to use for running.")
-    lazy val emulatorOptions = settingKey[String]("Options for running.")
+    lazy val emulatorOptions = settingKey[Seq[String]]("Options for running.")
     lazy val fuseCFS = settingKey[String]("Defines the driver to mount CFS 0.11 filesystem using fuse.")
     lazy val imageBuilder = settingKey[String]("Defines the D64 disk image builder.")
     lazy val imageBuilderOptions = settingKey[String]("Options for the image creator.")
@@ -34,8 +38,11 @@ object SbtCommTest extends AutoPlugin {
 
     lazy val compileAssembly = TaskKey[Unit]("compile-assembly", "Compiles assembly sources.")
     lazy val packageAssembly = TaskKey[Unit]("package-assembly", "Produces a main artifact, such as an executable program.")
+    lazy val packageD64 = TaskKey[Unit]("package-d64", "Produces a floppy disk image with an executable program.")
+    lazy val packageIDE64 = TaskKey[Unit]("package-ide64", "Produces a hard disk image with an executable program.")
     lazy val runEmulator = TaskKey[Unit]("run-emulator", "Runs an emulator.")
     lazy val runPlus60k = TaskKey[Unit]("run-plus60k", "Runs an emulator with a simulated +60k memory expansion.")
+    lazy val runIDE64 = TaskKey[Unit]("run-ide64", "Runs an emulator with a simulated IDE64 device.")
     lazy val sourceFiles = TaskKey[Seq[File]]("source-files", "Collects all assembly source files.")
   }
 
@@ -53,17 +60,20 @@ object SbtCommTest extends AutoPlugin {
     compiler := "dreamass",
     compilerOptions := "--max-errors 10 --max-warnings 10 --verbose -Wall",
     emulator := "x64sc",
-    emulatorOptions := "-model c64c -truedrive",
+    emulatorOptions := Seq("+confirmonexit", "+native-monitor", "-sound", "-soundsync 1", "-keymap 1", "+keepaspect", "-pal", "-ciamodel 1", "-model c64c", "-VICIIvcache", "-VICIIdsize", "-VICIIfilter 1", "-VICIIborders 2", "-sidenginemodel 258", "-residsamp 1", "-sidfilters", "-joydev1 0", "-joydev2 0", "+autostart-handle-tde", "+mouse", "-drive8type 1542", "-drive8extend 2", "-drive9type 0", "-truedrive", "-drivesound", "-drivesoundvolume 25"),
     fuseCFS := "cfs011mount",
     imageBuilder := "cc1541",
     imageBuilderOptions := "-n \"- SBT-COMMTEST -\" -i \"2019 \"",
     Keys.`package` := (packageAssemblyTask dependsOn compileAssemblyTask).value,
     packager := "exomizer",
     packageAssembly := (packageAssemblyTask dependsOn compileAssemblyTask).value,
+    packageD64 := (packageD64Task dependsOn packageAssemblyTask).value,
+    packageIDE64 := (packageIDE64Task dependsOn packageAssemblyTask).value,
     packagerOptions := "-p 1 -m 1 -t64 -n",
-    run := (runEmulatorTask dependsOn packageAssemblyTask).value,
-    runEmulator := (runEmulatorTask dependsOn packageAssemblyTask).value,
-    runPlus60k := (runPlus60kTask dependsOn packageAssemblyTask).value,
+    run := (runEmulatorTask dependsOn packageD64Task).value,
+    runEmulator := (runEmulatorTask dependsOn packageD64Task).value,
+    runPlus60k := (runPlus60kTask dependsOn packageD64Task).value,
+    runIDE64 := (runIDE64Task dependsOn packageIDE64Task).value,
     scalaSource in Test := baseDirectory.value / "src" / "test",
     sourceFiles := sourceFilesTask.value,
     unmanagedSourceDirectories in Compile += baseDirectory.value / "src" / "main"
@@ -90,29 +100,92 @@ object SbtCommTest extends AutoPlugin {
 
   lazy val packageAssemblyTask =
     task {
-      val additionalFiles = addFiles.value.map(new File(_).getAbsolutePath)
       val assemblySourcePath = assemblySource.value.getAbsolutePath
       val basePath = baseDirectory.value.getAbsolutePath
       val targetPath = normalizeNoEndSeparator(target.value.getAbsolutePath)
       val relativeSource = mainProgram.value
       val sourcePath = new File(assemblySourcePath, relativeSource).getAbsolutePath
       compileSrc(sourcePath, streams.value, assemblySourcePath, basePath, targetPath, compiler.value, compilerOptions.value)
-      val packagedFile = packagePrg(relativeSource, streams.value, targetPath, packager.value, packagerOptions.value, startAddress.value)
-      packageD64(relativeSource, streams.value, targetPath, additionalFiles, imageBuilder.value, imageBuilderOptions.value)
-      packagedFile
+      packagePrg(relativeSource, streams.value, targetPath, packager.value, packagerOptions.value, startAddress.value)
+    }
+
+  lazy val packageD64Task =
+    task {
+      val additionalFiles = addFiles.value.map(new File(_).getAbsolutePath)
+      val targetPath = normalizeNoEndSeparator(target.value.getAbsolutePath)
+      val relativeSource = mainProgram.value
+      packageD64Files(relativeSource, streams.value, targetPath, additionalFiles, imageBuilder.value, imageBuilderOptions.value)
+    }
+
+  lazy val packageIDE64Task =
+    task {
+      val additionalFiles = addFiles.value.map(new File(_).getAbsolutePath)
+      val relativeSource = mainProgram.value
+      packageIDE64Files(relativeSource, streams.value, target.value, additionalFiles, fuseCFS.value)
     }
 
   lazy val runEmulatorTask =
     task {
-      val options = Seq(emulatorOptions.value, "-memoryexphack 0")
+      val options = emulatorOptions.value ++ Seq("-memoryexphack 0")
       startEmulator(streams.value, options, target.value, mainProgram.value, emulator.value)
     }
 
   lazy val runPlus60kTask =
     task {
-      val options = Seq(emulatorOptions.value, "-memoryexphack 2 -plus60kbase 0xD100")
+      val options = emulatorOptions.value ++ Seq("-memoryexphack 2", "-plus60kbase 0xD100")
       startEmulator(streams.value, options, target.value, mainProgram.value, emulator.value)
     }
+
+  private def extractResourceFile(
+    resource: String,
+    s: TaskStreams,
+    target: File
+  ) = {
+    val stream = getClass.getResourceAsStream(resource)
+    val (resourceDirectory, resourceName, _, _) = relativeSourceComponents(resource)
+    val targetPath = normalizeNoEndSeparator(target.getAbsolutePath)
+    val targetDirectory = setupTargetDirectory(resourceDirectory, targetPath, s)
+    val filePath = new File(targetDirectory, resourceName).getAbsolutePath
+    copy(stream, getPath(filePath), REPLACE_EXISTING)
+    filePath
+  }
+
+  lazy val runIDE64Task =
+    task {
+      val relativeSource = mainProgram.value
+      val targetPath = normalizeNoEndSeparator(target.value.getAbsolutePath)
+      val targetOutputIDE64 = targetHardDiskImageFullPath(relativeSource, streams.value, targetPath)
+      val idedosPath = extractResourceFile("/idedos20151012-c64.rom", streams.value, target.value)
+      val options = emulatorOptions.value ++ Seq("-cartide " + idedosPath, "-IDE64version 1", "-IDE64image1 " + targetOutputIDE64, "-IDE64autosize1")
+      startEmulator(streams.value, options, target.value, mainProgram.value, emulator.value)
+    }
+
+  private def unpackHardDiskImage(
+    idezipResource: String,
+    relativeSource: String,
+    s: TaskStreams,
+    target: File
+  ) = {
+    s.log.info("Archive:  ide.zip")
+    val targetPath = normalizeNoEndSeparator(target.getAbsolutePath)
+    val targetOutputIDE64 = targetHardDiskImageFullPath(relativeSource, s, targetPath)
+    val idezipPath = extractResourceFile(idezipResource, s, target)
+    s.log.info("  inflating: ide.cfa")
+    val istream = new ZipInputStream(new FileInputStream(idezipPath))
+    while (istream.getNextEntry.getName != "ide.cfa") {}
+    val hddFile = new File(targetOutputIDE64)
+    val ostream = new FileOutputStream(hddFile)
+    val buffer = new Array[Byte](1024)
+    var length = istream.read(buffer)
+    while (length > 0) {
+      ostream.write(buffer, 0, length)
+      length = istream.read(buffer)
+    }
+    ostream.close
+    istream.closeEntry
+    istream.close
+    targetOutputIDE64
+  }
 
   private def startEmulator(
     s: TaskStreams,
@@ -124,7 +197,7 @@ object SbtCommTest extends AutoPlugin {
     val targetPath = normalizeNoEndSeparator(target.getAbsolutePath)
     val targetOutputD64 = targetDiskImageFullPath(relativeSource, s, targetPath)
     val fileNameOnDisk = executableFileNameOnDisk(relativeSource)
-    val command = emulator + " " + emulatorOptions.mkString(" ") + " " + targetOutputD64 + ":" + fileNameOnDisk
+    val command = emulator + " " + emulatorOptions.mkString(" ") + " -attach8rw " + targetOutputD64 + ":" + fileNameOnDisk
     executeCommand(command, s)
   }
 
@@ -172,11 +245,31 @@ object SbtCommTest extends AutoPlugin {
     new File(targetDirectory, sourceBaseName + ".d64").getAbsolutePath
   }
 
+  private def targetHardDiskImageFullPath(
+    relativeSource: String,
+    s: TaskStreams,
+    targetPath: String
+  ) = {
+    val (sourceDirectory, _, _, _) = relativeSourceComponents(relativeSource)
+    val targetDirectory = setupTargetDirectory(sourceDirectory, targetPath, s)
+    new File(targetDirectory, "ide.cfa").getAbsolutePath
+  }
+
   private def fileToDisk(
     fullPath: String
   ) = "-f \"" + getBaseName(fullPath).toUpperCase + "\" -w " + fullPath
 
-  private def packageD64(
+  private def targetExecutablePrg(
+    relativeSource: String,
+    s: TaskStreams,
+    targetPath: String,
+  ) = {
+    val (sourceDirectory, _, sourceBaseName, _) = relativeSourceComponents(relativeSource)
+    val targetDirectory = setupTargetDirectory(sourceDirectory, targetPath, s)
+    new File(targetDirectory, sourceBaseName).getAbsolutePath
+  }
+
+  private def packageD64Files(
     relativeSource: String,
     s: TaskStreams,
     targetPath: String,
@@ -184,13 +277,48 @@ object SbtCommTest extends AutoPlugin {
     imageBuilder: String,
     imageBuilderOptions: String
   ) = {
-    val (sourceDirectory, _, sourceBaseName, _) = relativeSourceComponents(relativeSource)
-    val targetDirectory = setupTargetDirectory(sourceDirectory, targetPath, s)
-    val targetExecutablePrg = new File(targetDirectory, sourceBaseName).getAbsolutePath
-    val allFiles = targetExecutablePrg +: additionalFiles
+    val allFiles = targetExecutablePrg(relativeSource, s, targetPath) +: additionalFiles
     val targetOutputD64 = targetDiskImageFullPath(relativeSource, s, targetPath)
     val command = imageBuilder + " " + allFiles.map(fileToDisk(_)).mkString(" ") + " " + imageBuilderOptions + " " + targetOutputD64
     executeCommand(command, s)
+    targetOutputD64
+  }
+
+  private def packageIDE64Files(
+    relativeSource: String,
+    s: TaskStreams,
+    target: File,
+    additionalFiles: Seq[String],
+    cfsMount: String
+  ) = {
+    val targetPath = normalizeNoEndSeparator(target.getAbsolutePath)
+    val allFiles = targetExecutablePrg(relativeSource, s, targetPath) +: additionalFiles
+    val targetOutputIDE64 = unpackHardDiskImage("/ide.zip", relativeSource, s, target)
+    val ide64MountPoint = createTempDirectory("ide64-").toAbsolutePath.toString
+    try {
+      val command = cfsMount + " " + targetOutputIDE64 + " " + ide64MountPoint
+      executeCommand(command, s)
+      val cfsPartitionName = "01 sbt-commtest"
+      val cfsPartitionRoot = getPath(ide64MountPoint, cfsPartitionName).toString
+      allFiles.foreach(file => {
+        val (_, fileName, baseName, extension) = relativeSourceComponents(file)
+        val targetName = if (extension == "" || extension == "prg") baseName else fileName
+        val targetPath = getPath(cfsPartitionRoot, targetName)
+        copy(getPath(file), targetPath, REPLACE_EXISTING)
+        s.log.info("'" + file + "' -> '" + targetPath.toString + "'")
+        val targetFile = targetPath.toFile
+        targetFile.setWritable(true)
+        targetFile.setReadable(true)
+        targetFile.setExecutable(true)
+        s.log.info("mode of '" + targetPath.toString + "' changed to 0755 (rwxr-xr-x)")
+      })
+    }
+    finally {
+      val command = "fusermount -u " + ide64MountPoint
+      executeCommand(command, s)
+      deleteDirectory(new File(ide64MountPoint))
+    }
+    targetOutputIDE64
   }
 
   private def packagePrg(
