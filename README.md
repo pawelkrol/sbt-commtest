@@ -6,7 +6,7 @@ sbt-commtest
 VERSION
 -------
 
-Version 0.05-SNAPSHOT (2019-07-06)
+Version 0.05-SNAPSHOT (2019-07-08)
 
 INSTALLATION
 ------------
@@ -84,19 +84,25 @@ Define the main program file (as a relative path to a directory containing all o
 
 In an above example `target/program` would be created by packaging `target/program.prg`. Note that the main program file does not need to end with a `.src` extension (you may not necessarily want to unit test it before packaging), it will be successfully compiled and packaged nonetheless.
 
-Package the program:
+Package the program onto a target D64 disk image:
 
     sbt> package
 
 `mainProgram` setting will also determine a file name of a target D64 disk image (e.g. `target/program.d64`).
 
+Package the program onto a target hard drive image:
+
+    sbt> packageIde64
+
 Execute the program within an emulator (optionally with an additional hardware simulated):
 
     sbt> run
-    sbt> run-ide64
-    sbt> run-plus60k
+    sbt> runIde64
+    sbt> runPlus60k
 
-Delete files produced by the build:
+Please note that running the program in the IDE64-simulated environment requires a successful build and packaging of an IDE64 hard drive image, i.e. you have to execute the `packageIde64` task first.
+
+Delete all files produced by the build:
 
     sbt> clean
 

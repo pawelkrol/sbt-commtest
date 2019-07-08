@@ -1,9 +1,11 @@
 CHANGES
 =======
 
-0.05-SNAPSHOT (2019-07-06)
+0.05-SNAPSHOT (2019-07-08)
 --------------------------
 
+* Add a new build task (`packageIde64`) that writes a compiled executable and all additional files into a target IDE64 HDD image
+* Add a new build task (`runIde64`) that executes a test program in a simulated IDE64 environment
 * Fix bug with an incorrect parsing of executed shell commands by properly escaping quotation marks of an input string
 * `CommTest` library dependency version updated to 0.05 (adds support for `callOriginal` method which executes an original subroutine implementation from within its mocked version)
 
