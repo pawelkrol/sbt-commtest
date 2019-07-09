@@ -1,4 +1,4 @@
-isSnapshot := false
+isSnapshot := true
 
 libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "2.6"
@@ -14,7 +14,7 @@ sbtPlugin := true
 
 scalaVersion := "2.12.8"
 
-version := "0.05"
+version := "0.06-SNAPSHOT"
 
 publishTo := {
   val nexus = "https://oss.sonatype.org/"
