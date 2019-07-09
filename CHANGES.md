@@ -1,8 +1,8 @@
 CHANGES
 =======
 
-0.05-SNAPSHOT (2019-07-08)
---------------------------
+0.05 (2019-07-09)
+-----------------
 
 * Add a new build task (`packageIde64`) that writes a compiled executable and all additional files into a target IDE64 HDD image
 * Add a new build task (`runIde64`) that executes a test program in a simulated IDE64 environment
