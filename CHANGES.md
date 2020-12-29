@@ -1,10 +1,13 @@
 CHANGES
 =======
 
-0.06-SNAPSHOT (2019-07-09)
+0.06-SNAPSHOT (2020-12-29)
 --------------------------
 
-* TODO
+* `Scala` library version updated to 2.12.10
+* `sbt` build tool version updated to 1.4.5
+* `CommTest` dependency version updated to 0.06-SNAPSHOT
+* `commons-io` library version updated to 2.8.0
 
 0.05 (2019-07-09)
 -----------------

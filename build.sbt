@@ -1,7 +1,7 @@
 isSnapshot := true
 
 libraryDependencies ++= Seq(
-  "commons-io" % "commons-io" % "2.6"
+  "commons-io" % "commons-io" % "2.8.0"
 )
 
 maxErrors := 1
@@ -12,7 +12,7 @@ organization := "com.github.pawelkrol"
 
 sbtPlugin := true
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.12.10"
 
 version := "0.06-SNAPSHOT"
 

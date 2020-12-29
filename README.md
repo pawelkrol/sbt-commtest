@@ -6,7 +6,7 @@ sbt-commtest
 VERSION
 -------
 
-Version 0.06-SNAPSHOT (2019-07-09)
+Version 0.06-SNAPSHOT (2020-12-29)
 
 INSTALLATION
 ------------
@@ -28,7 +28,7 @@ A sample `build.sbt` with settings to configure `sbt-commtest`:
           addFiles := Seq("01", "02", "03"),
           mainProgram := "program.src",
           packagerOptions := "-m64 -t64 -x1",
-          scalaVersion := "2.12.8",
+          scalaVersion := "2.13.4",
           startAddress := 0x1000
         )
       )
@@ -116,9 +116,9 @@ In order to avoid running out of available disk space quickly it is recommended 
 COPYRIGHT AND LICENSE
 ---------------------
 
-Copyright (C) 2017-2019 by Pawel Krol.
+Copyright (C) 2017-2020 by Pawel Krol.
 
-This library is free open source software; you can redistribute it and/or modify it under [the same terms](https://github.com/pawelkrol/sbt-commtest/blob/master/LICENSE.md) as Scala itself, either Scala version 2.12.8 or, at your option, any later version of Scala you may have available.
+This library is free open source software; you can redistribute it and/or modify it under [the same terms](https://github.com/pawelkrol/sbt-commtest/blob/master/LICENSE.md) as Scala itself, either Scala version 2.12.10 or, at your option, any later version of Scala you may have available.
 
 
 [sbt]: http://www.scala-sbt.org/

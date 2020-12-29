@@ -60,10 +60,10 @@ object SbtCommTest extends AutoPlugin {
     compiler := "dreamass",
     compilerOptions := "--max-errors 10 --max-warnings 10 --verbose -Wall",
     emulator := "x64sc",
-    emulatorOptions := Seq("+confirmonexit", "+native-monitor", "-sound", "-soundsync 1", "-keymap 1", "+keepaspect", "-pal", "-ciamodel 1", "-model c64c", "-VICIIvcache", "-VICIIdsize", "-VICIIfilter 1", "-VICIIborders 2", "-sidenginemodel 258", "-residsamp 1", "-sidfilters", "-joydev1 0", "-joydev2 0", "+autostart-handle-tde", "+mouse", "-drive8type 1542", "-drive8extend 2", "-drive9type 0", "-truedrive", "-drivesound", "-drivesoundvolume 25"),
+    emulatorOptions := Seq("+confirmonexit", "+nativemonitor", "-speed 100", "-sound", "-soundsync 1", "-keymap 1", "+keepaspect", "-pal", "-ciamodel 1", "-model c64c", "-VICIIvcache", "-VICIIdsize", "-VICIIfilter 1", "-VICIIborders 1", "-sidenginemodel 258", "-residsamp 1", "-sidfilters", "-joydev1 0", "-joydev2 0", "+autostart-handle-tde", "+mouse", "-drive8type 1542", "-drive8extend 2", "-drive9type 0", "-truedrive", "-drivesound", "-drivesoundvolume 25"),
     fuseCFS := "cfs011mount",
     imageBuilder := "cc1541",
-    imageBuilderOptions := "-n \"- SBT-COMMTEST -\" -i \"2019 \"",
+    imageBuilderOptions := "-n \"- sbt-commtest -\" -i \"2020 \"",
     Keys.`package` := (packageAssemblyTask dependsOn compileAssemblyTask).value,
     packager := "exomizer",
     packageAssembly := (packageAssemblyTask dependsOn compileAssemblyTask).value,
@@ -81,7 +81,7 @@ object SbtCommTest extends AutoPlugin {
 
   private def dependencies: Seq[Setting[_]] = Seq(
     resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
-    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.05"
+    libraryDependencies += "com.github.pawelkrol" % "commtest" % "0.06-SNAPSHOT"
   )
 
   override lazy val projectSettings = baseSettings ++ dependencies
@@ -257,7 +257,7 @@ object SbtCommTest extends AutoPlugin {
 
   private def fileToDisk(
     fullPath: String
-  ) = "-f \"" + getBaseName(fullPath).toUpperCase + "\" -w " + fullPath
+  ) = "-f \"" + getBaseName(fullPath).toLowerCase + "\" -w " + fullPath
 
   private def targetExecutablePrg(
     relativeSource: String,
